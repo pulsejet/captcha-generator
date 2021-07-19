@@ -35,17 +35,9 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/HaileyBot/captcha-generator.git"
+		"url": "git+https://github.com/pulsejet/captcha-generator-alphanumeric.git"
 	},
-	"bugs": {
-		"url": "https://github.com/HaileyBot/captcha-generator/issues",
-		"email": "quin@cheesits456.dev"
-	},
-	"funding": {
-		"type": "individual",
-		"url": "https://donate.haileybot.com"
-	},
-	"homepage": "https://www.haileybot.com/captcha-generator",
+	"homepage": "https://github.com/pulsejet/captcha-generator-alphanumeric",
 	"keywords": [
 		"captcha",
 		"generator",
