@@ -1,25 +1,15 @@
 <h1 align="center">Captcha Generator</h1>
-<p align="center">
-	<a href="https://www.npmjs.com/package/@haileybot/captcha-generator" title="NPM version"><img alt="NPM version" src="https://img.shields.io/npm/v/@haileybot/captcha-generator?logo=npm"/></a>
-	<a href="https://www.npmjs.com/package/@haileybot/captcha-generator" title="NPM downloads"><img alt="NPM downloads" src="https://img.shields.io/npm/dt/@haileybot/captcha-generator?logo=npm"/></a>
-	<a href="https://david-dm.org/HaileyBot/captcha-generator" title="Dependencies"><img alt="Dependencies" src="https://img.shields.io/david/HaileyBot/captcha-generator?logo=npm"/></a>
-	<br>
-	<a href="https://github.com/HaileyBot/captcha-generator/blob/master/LICENSE" title="License"><img alt="License" src="https://img.shields.io/github/license/HaileyBot/captcha-generator?logo=github&logoColor=black"/></a>
-	<a href="https://app.fossa.com/projects/git%2Bgithub.com%2FHaileyBot%2Fcaptcha-generator?ref=badge_shield" title="FOSSA Status"><img alt="FOSSA Status" src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FHaileyBot%2Fcaptcha-generator.svg?type=shield"/></a>
-	<a href="https://codecov.io/gh/HaileyBot/captcha-generator" title="Code Coverage"><img alt="Code Coverage" src="https://codecov.io/gh/HaileyBot/captcha-generator/branch/master/graph/badge.svg?token=OW7Q7Y1B2A"/></a>
-	<br>
-	<a href="https://github.com/sponsors/cheesits456" title="GitHub Sponsors"><img alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/cheesits456?color=EA4AAA&logo=github-sponsors"/></a>
-	<a href="https://donate.haileybot.com" title="PayPal"><img alt="PayPal" src="https://img.shields.io/badge/donate-paypal-13e?logo=paypal"/></a>
-</p>
 
-Captcha Generator is a Node library for quickly and easily generating captcha images that can be used through an authorized bot to verify human users on a chat platform such as Slack or Discord.
+Captcha Generator is a Node library for quickly and easily generating captcha images. Forked from [HaileyBot/captcha-generator](https://github.com/HaileyBot/captcha-generator) for colorful alphanumeric captchas.
+
+![Sample](sample.jpeg)
 
 ## Installation
 
 Use the package manager [npm](https://www.npmjs.com/) to install Captcha Generator
 
 ```bash
-npm i @haileybot/captcha-generator
+npm i captcha-generator-alphanumeric
 ```
 
 ## Usage
@@ -28,7 +18,7 @@ npm i @haileybot/captcha-generator
 
 ```js
 // Import the module
-const Captcha = require("@haileybot/captcha-generator");
+const Captcha = require("captcha-generator-alphanumeric");
 
 // Create a new Captcha object
 //  - Optional argument to specify image height (250 to 400px, default 250)
@@ -47,7 +37,7 @@ console.log(captcha.value);
 ```js
 const path = require("path"),
 	fs = require("fs"),
-	Captcha = require("@haileybot/captcha-generator");
+	Captcha = require("captcha-generator-alphanumeric");
 
 let captcha = new Captcha();
 captcha.PNGStream.pipe(fs.createWriteStream(path.join(__dirname, `${captcha.value}.png`)));
@@ -59,7 +49,7 @@ captcha.JPEGStream.pipe(fs.createWriteStream(path.join(__dirname, `${captcha.val
 This example assumes you already have the core framework of a Discord Bot set up
 
 ```js
-const Captcha = require("@haileybot/captcha-generator");
+const Captcha = require("captcha-generator-alphanumeric");
 
 // Use this function for blocking certain commands or features from automated self-bots
 function verifyHuman(msg) {
@@ -79,6 +69,4 @@ function verifyHuman(msg) {
 
 ## License
 
-This project is licensed under [GPL-3.0](https://github.com/HaileyBot/captcha-generator/blob/master/LICENSE)
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FHaileyBot%2Fcaptcha-generator.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FHaileyBot%2Fcaptcha-generator?ref=badge_large)
+This project is licensed under [GPL-3.0](https://github.com/pulsejet/captcha-generator-alphanumeric/blob/master/LICENSE.md)
