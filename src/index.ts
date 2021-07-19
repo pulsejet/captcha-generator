@@ -7,7 +7,7 @@ Canvas.registerFont(require("path").resolve(__dirname, "../assets/Swift.ttf"), {
 const randomText = (): string =>
 		Math.random()
 			.toString(36)
-			.replace(/[^a-z]|[gkqr]+/gi, "")
+			.replace(/[^a-z1-9]|[gkqrxi5ovm]+/gi, "")
 			.substring(0, 6)
 			.toUpperCase(),
 	shuffleArray = (arr: number[]): number[] => {
@@ -30,13 +30,23 @@ const randomText = (): string =>
 class Captcha {
 	private _canvas: Canvas.Canvas;
 	private _value: string;
+	private _color: string;
 
-	constructor(_h: number = 250) {
+	constructor(_h: number = 150) {
 		// Make sure argument is a number, limit to a range from 250 to 400
-		_h = typeof _h !== "number" || _h < 250 ? 250 : _h > 400 ? 400 : _h;
+		_h = typeof _h !== "number" || _h < 150 ? 150 : _h > 400 ? 400 : _h;
 
 		// Initialize canvas
 		this._canvas = Canvas.createCanvas(400, _h);
+
+		// Initialize color
+		{
+			const c = 100;  // darkness factor - ensure only visible colors
+			const r = 255 - c - Math.round(Math.random() * (255-c));
+			const g = 255 - c - Math.round(Math.random() * (255-c));
+			const b = 255 - c - Math.round(Math.random() * (255-c));
+			this._color = `rgb(${r}, ${g}, ${b})`;
+		}
 
 		const ctx = this._canvas.getContext("2d");
 
@@ -48,7 +58,7 @@ class Captcha {
 		ctx.save();
 
 		// Set style for lines
-		ctx.strokeStyle = "#000";
+		ctx.strokeStyle = this._color;
 		ctx.lineWidth = 4;
 		// Draw 10 lines
 		ctx.beginPath();
@@ -74,7 +84,7 @@ class Captcha {
 		ctx.stroke();
 
 		// Set style for circles
-		ctx.fillStyle = "#000";
+		ctx.fillStyle = this._color;
 		ctx.lineWidth = 0;
 		// Draw circles
 		for (let i = 0; i < 200; i++) {
@@ -91,21 +101,29 @@ class Captcha {
 
 		// Set style for text
 		ctx.font = "bold 90px swift";
-		ctx.fillStyle = "#000";
+		ctx.fillStyle = this._color;
 		// Set position for text
-		ctx.textAlign = "center";
-		ctx.textBaseline = "top";
+		ctx.textAlign = "left";
+		ctx.textBaseline = "middle";
 		ctx.translate(0, _h);
 		ctx.translate(
-			Math.round(Math.random() * 100 - 50) + 200,
-			-1 * Math.round(Math.random() * (_h / 4) - _h / 8) - _h / 2
+			Math.round(Math.random() * 40 - 20) + 20,
+			-1 * Math.round(Math.random() * (_h / 8) - _h / 16) - _h / 2 + _h/8
 		);
-		ctx.rotate(Math.random() - 0.5);
+		ctx.rotate(0.3*(Math.random() - 0.5));
 		// Set text value and print it to canvas
 		ctx.beginPath();
 		this._value = "";
 		while (this._value.length !== 6) this._value = randomText();
-		ctx.fillText(this._value, 0, 0);
+
+		let xCoord = 0;
+		for (const k of this._value) {
+			const size = (Math.random() - 0.5) * 40 + 70;
+			const font = isNaN(parseInt(k)) ? 'swift' : 'serif';
+			ctx.font = `bold ${size}px ${font}`;
+			ctx.fillText(k, xCoord, 0);
+			xCoord += ctx.measureText(k).width;
+		}
 
 		// Draw foreground noise
 		ctx.restore();
