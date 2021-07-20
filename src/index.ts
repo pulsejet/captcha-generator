@@ -1,16 +1,35 @@
 import * as Canvas from "canvas";
+import * as crypto from 'crypto';
 
 Canvas.registerFont(require("path").resolve(__dirname, "../assets/Swift.ttf"), {
 	family: "swift"
 });
 
-const randomText = (): string =>
-		Math.random()
-			.toString(36)
-			.replace(/[^a-z1-9]|[gkqrxi5ovm]+/gi, "")
-			.substring(0, 6)
-			.toUpperCase(),
-	shuffleArray = (arr: number[]): number[] => {
+const alphanumeric = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+	       .replace(/[RGQIOVMI01]+/g, "");  // excludes
+
+function randomize(seed: string, len?: number) {
+  const sourceArray = seed.split('');
+  let baselen = typeof len === 'undefined' ? sourceArray.length : len;
+  const rnd = crypto.randomBytes(baselen);
+  const result = [];
+  let counter = 0, characterIndex, r;
+  while (baselen > 0) {
+    r = rnd[counter];
+    characterIndex = r % sourceArray.length;
+    result.push(sourceArray.splice(characterIndex, 1)[0]);
+    baselen--;
+    counter++;
+  }
+  return result.join('');
+}
+
+const randomText = (): string => {
+  const alphaseed = randomize(alphanumeric);
+  return randomize(alphaseed, 6);
+};
+
+const shuffleArray = (arr: number[]): number[] => {
 		let i: number = arr.length,
 			temp: number,
 			randomIndex: number;
@@ -32,7 +51,7 @@ class Captcha {
 	private _value: string;
 	private _color: string;
 
-	constructor(_h: number = 150) {
+	constructor(_h: number = 150, _text: string = '') {
 		// Make sure argument is a number, limit to a range from 250 to 400
 		_h = typeof _h !== "number" || _h < 150 ? 150 : _h > 400 ? 400 : _h;
 
@@ -100,7 +119,6 @@ class Captcha {
 		}
 
 		// Set style for text
-		ctx.font = "bold 90px swift";
 		ctx.fillStyle = this._color;
 		// Set position for text
 		ctx.textAlign = "left";
@@ -113,16 +131,21 @@ class Captcha {
 		ctx.rotate(0.3*(Math.random() - 0.5));
 		// Set text value and print it to canvas
 		ctx.beginPath();
-		this._value = "";
-		while (this._value.length !== 6) this._value = randomText();
+
+		if (_text) {
+			this._value = _text;
+		} else {
+			this._value = "";
+			while (this._value.length !== 6) this._value = randomText();
+		}
 
 		let xCoord = 0;
-		for (const k of this._value) {
+		for (const chr of this._value) {
 			const size = (Math.random() - 0.5) * 40 + 70;
-			const font = isNaN(parseInt(k)) ? 'swift' : 'serif';
+			const font = chr.match(/[a-z]/i) ? 'swift' : 'serif';
 			ctx.font = `bold ${size}px ${font}`;
-			ctx.fillText(k, xCoord, 0);
-			xCoord += ctx.measureText(k).width;
+			ctx.fillText(chr, xCoord, 0);
+			xCoord += ctx.measureText(chr).width;
 		}
 
 		// Draw foreground noise
