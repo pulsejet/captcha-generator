@@ -18,7 +18,7 @@ npm i captcha-generator-alphanumeric
 
 ```js
 // Import the module
-const Captcha = require("captcha-generator-alphanumeric");
+const Captcha = require("captcha-generator-alphanumeric").default;
 
 // Create a new Captcha object
 //  - Optional argument to specify image height (250 to 400px, default 250)
@@ -37,7 +37,7 @@ console.log(captcha.value);
 ```js
 const path = require("path"),
 	fs = require("fs"),
-	Captcha = require("captcha-generator-alphanumeric");
+	Captcha = require("captcha-generator-alphanumeric").default;
 
 let captcha = new Captcha();
 captcha.PNGStream.pipe(fs.createWriteStream(path.join(__dirname, `${captcha.value}.png`)));
@@ -49,7 +49,7 @@ captcha.JPEGStream.pipe(fs.createWriteStream(path.join(__dirname, `${captcha.val
 This example assumes you already have the core framework of a Discord Bot set up
 
 ```js
-const Captcha = require("captcha-generator-alphanumeric");
+const Captcha = require("captcha-generator-alphanumeric").default;
 
 // Use this function for blocking certain commands or features from automated self-bots
 function verifyHuman(msg) {

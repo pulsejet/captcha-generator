@@ -51,9 +51,9 @@ class Captcha {
 	private _value: string;
 	private _color: string;
 
-	constructor(_h: number = 150, _text: string = '') {
+	constructor(_h: number = 120, _text: string = '') {
 		// Make sure argument is a number, limit to a range from 250 to 400
-		_h = typeof _h !== "number" || _h < 150 ? 150 : _h > 400 ? 400 : _h;
+		_h = typeof _h !== "number" || _h < 120 ? 120 : _h > 400 ? 400 : _h;
 
 		// Initialize canvas
 		this._canvas = Canvas.createCanvas(400, _h);
@@ -76,9 +76,13 @@ class Captcha {
 		ctx.fillRect(0, 0, 400, _h);
 		ctx.save();
 
+		// Scale down text for size
+		let scaling = _h / 150;
+		if (scaling > 1.3) scaling = 1.3;
+
 		// Set style for lines
 		ctx.strokeStyle = this._color;
-		ctx.lineWidth = 4;
+		ctx.lineWidth = 4 * scaling;
 		// Draw 10 lines
 		ctx.beginPath();
 		const coords: number[][] = [];
@@ -111,7 +115,7 @@ class Captcha {
 			ctx.arc(
 				Math.round(Math.random() * 360) + 20, // X coordinate
 				Math.round(Math.random() * 360) + 20, // Y coordinate
-				Math.round(Math.random() * 7) + 1, // Radius
+				Math.round(Math.random() * 7 * scaling) + 1, // Radius
 				0, // Start anglez
 				Math.PI * 2 // End angle
 			);
@@ -125,7 +129,7 @@ class Captcha {
 		ctx.textBaseline = "middle";
 		ctx.translate(0, _h);
 		ctx.translate(
-			Math.round(Math.random() * 40 - 20) + 20,
+			Math.round(Math.random() * 40 - 20) + 30,
 			-1 * Math.round(Math.random() * (_h / 8) - _h / 16) - _h / 2 + _h/8
 		);
 		ctx.rotate(0.3*(Math.random() - 0.5));
@@ -141,7 +145,7 @@ class Captcha {
 
 		let xCoord = 0;
 		for (const chr of this._value) {
-			const size = (Math.random() - 0.5) * 40 + 70;
+			const size = ((Math.random() - 0.5) * 40 + 70) * scaling;
 			const font = chr.match(/[a-z]/i) ? 'swift' : 'serif';
 			ctx.font = `bold ${size}px ${font}`;
 			ctx.fillText(chr, xCoord, 0);
@@ -184,4 +188,4 @@ class Captcha {
 	}
 }
 
-export = Captcha;
+export default Captcha;
