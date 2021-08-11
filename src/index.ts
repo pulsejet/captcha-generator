@@ -51,7 +51,15 @@ class Captcha {
 	private _value: string;
 	private _color: string;
 
-	constructor(_h: number = 120, _text: string = '') {
+	constructor(
+		_h: number = 120,
+		_text?: string,
+		_complexity?: {
+			lines?: number;
+			circleRadius?: number;
+			foregroundNoise?: number;
+		},
+	) {
 		// Make sure argument is a number, limit to a range from 250 to 400
 		_h = typeof _h !== "number" || _h < 120 ? 120 : _h > 400 ? 400 : _h;
 
@@ -88,7 +96,7 @@ class Captcha {
 		const coords: number[][] = [];
 		for (let i = 0; i < 4; i++) {
 			if (!coords[i]) coords[i] = [];
-			for (let j = 0; j < 5; j++) coords[i][j] = Math.round(Math.random() * 80) + j * 80;
+			for (let j = 0; j < (_complexity?.lines ?? 5); j++) coords[i][j] = Math.round(Math.random() * 80) + j * 80;
 			if (!(i % 2)) coords[i] = shuffleArray(coords[i]);
 		}
 		for (let i = 0; i < coords.length; i++) {
@@ -115,7 +123,7 @@ class Captcha {
 			ctx.arc(
 				Math.round(Math.random() * 360) + 20, // X coordinate
 				Math.round(Math.random() * 360) + 20, // Y coordinate
-				Math.round(Math.random() * 7 * scaling) + 1, // Radius
+				Math.round(Math.random() * (_complexity?.circleRadius ?? 7) * scaling) + 1, // Radius
 				0, // Start anglez
 				Math.PI * 2 // End angle
 			);
@@ -154,7 +162,7 @@ class Captcha {
 
 		// Draw foreground noise
 		ctx.restore();
-		for (let i = 0; i < 5000; i++) {
+		for (let i = 0; i < (_complexity?.foregroundNoise ?? 5000); i++) {
 			ctx.beginPath();
 			let color = "#";
 			while (color.length < 7) color += Math.round(Math.random() * 16).toString(16);
