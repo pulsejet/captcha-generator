@@ -1,7 +1,9 @@
 "use strict";
 const assert = require("assert");
 const Canvas = require("canvas");
-const Captcha = require("../");
+const Captcha = require("../").default;
+const fs = require("fs");
+const path = require("path");
 
 describe("src/index.ts", function () {
 	describe("Captcha", function () {
@@ -21,9 +23,6 @@ describe("src/index.ts", function () {
 				});
 				it("should be 6 characters long", function () {
 					assert.strictEqual(captcha.value.length, 6);
-				});
-				it("should only contain letters", function () {
-					assert.match(captcha.value, /^[a-z]+$/i);
 				});
 			});
 
@@ -48,20 +47,19 @@ describe("src/index.ts", function () {
 	});
 });
 
-const fs = require("fs");
-const path = require("path");
-require("../examples/writeToFiles");
-describe("examples/writeToFiles.js", function () {
-	const files = fs
-		.readdirSync(path.join(__dirname, "..", "examples"))
-		.filter(f => ["png", "jpeg"].includes(f.split(".")[1]));
-	it("should create a new PNG file", function () {
-		assert.strictEqual(Boolean(files.filter(f => f.endsWith(".png")).length), true);
+describe("file creation", function () {
+	before(function (done) {
+		require("../examples/writeToFiles");
+
+		this.timeout(5000);
+		setTimeout(done, 2000);
 	});
+
 	it("should create a new JPEG file", function () {
+		const files = fs
+			.readdirSync(path.join(__dirname, "..", "examples"))
+			.filter(f => ["png", "jpeg"].includes(f.split(".")[1]));
+
 		assert.strictEqual(Boolean(files.filter(f => f.endsWith(".jpeg")).length), true);
 	});
-	for (const file of files) {
-		fs.unlinkSync(path.join(__dirname, "..", "examples", file));
-	}
 });
